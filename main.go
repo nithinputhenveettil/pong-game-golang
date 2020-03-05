@@ -45,6 +45,10 @@ func main() {
 			moveHitBar()
 		}
 
+		if rl.IsKeyDown(257) == true {
+			initGame()
+		}
+
 		if rl.IsKeyDown(263) == true {
 			accelerateLeft = true
 		}
@@ -67,7 +71,7 @@ func main() {
 		if gameOver {
 			rl.DrawText("Game Over!", 220, 200, 110, rl.White)
 			rl.DrawText("Your Score : "+strconv.Itoa(score), 350, 390, 40, rl.Gray)
-			rl.DrawText("Press any key to continue", 650, 520, 20, rl.LightGray)
+			rl.DrawText("Press enter key to continue", 650, 520, 17, rl.LightGray)
 		}
 
 		rl.EndDrawing()
