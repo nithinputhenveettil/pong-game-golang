@@ -14,17 +14,19 @@ const (
 	height       int32 = 600
 	ballSpeed    int32 = 8
 	ballRadius   int32 = 25
-	hitBarSpeed  int   = 14
+	hitBarSpeed  int32 = 14
 	hitBarLength int32 = 100
 	hitBarHeight int32 = 25
 )
 
 var (
-	screenSize    [2]int32
-	hitBarLeft    int32
-	ballCentreY   int32
-	ballCentreX   int32
-	ballDirection string
+	screenSize      [2]int32
+	hitBarLeft      int32
+	ballCentreY     int32
+	ballCentreX     int32
+	ballDirection   string
+	accelerateLeft  bool
+	accelerateRight bool
 )
 
 func main() {
@@ -35,8 +37,26 @@ func main() {
 	rl.SetTargetFPS(60)
 
 	for !rl.WindowShouldClose() {
+
+		if rl.IsKeyDown(263) == true {
+			accelerateLeft = true
+		}
+
+		if rl.IsKeyDown(262) == true {
+			accelerateRight = true
+		}
+
+		if rl.IsKeyUp(263) == true {
+			accelerateLeft = false
+		}
+
+		if rl.IsKeyUp(262) == true {
+			accelerateRight = false
+		}
+
 		rl.BeginDrawing()
 		moveBall()
+		moveHitBar()
 		rl.ClearBackground(rl.Black)
 		drawBall()
 		drawHitBar()
@@ -53,6 +73,8 @@ func initGame() {
 	ballCentreY = 150
 	ballCentreX = rand.Int31n(screenSize[0]-200) + 100
 	ballDirection = "UP_LEFT"
+	accelerateLeft = false
+	accelerateRight = false
 }
 
 func drawBall() {
@@ -107,6 +129,18 @@ func moveBall() {
 			ballDirection = "UP_LEFT"
 		} else {
 			ballDirection = "DOWN_LEFT"
+		}
+	}
+}
+
+func moveHitBar() {
+	if accelerateLeft {
+		if (hitBarLeft - hitBarSpeed) >= 0 {
+			hitBarLeft -= hitBarSpeed
+		}
+	} else if accelerateRight {
+		if (hitBarLeft + hitBarSpeed + hitBarLength) <= screenSize[0] {
+			hitBarLeft += hitBarSpeed
 		}
 	}
 }
