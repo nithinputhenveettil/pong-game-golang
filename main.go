@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -28,6 +29,7 @@ var (
 	accelerateLeft  bool
 	accelerateRight bool
 	gameOver        bool
+	score           int
 )
 
 func main() {
@@ -59,6 +61,15 @@ func main() {
 		rl.ClearBackground(rl.Black)
 		drawBall()
 		drawHitBar()
+
+		rl.DrawText(strconv.Itoa(score), 810, 100, 80, rl.White)
+
+		if gameOver {
+			rl.DrawText("Game Over!", 220, 200, 110, rl.White)
+			rl.DrawText("Your Score : "+strconv.Itoa(score), 350, 390, 40, rl.Gray)
+			rl.DrawText("Press any key to continue", 650, 520, 20, rl.LightGray)
+		}
+
 		rl.EndDrawing()
 
 	}
@@ -76,6 +87,7 @@ func initGame() {
 	accelerateLeft = false
 	accelerateRight = false
 	gameOver = false
+	score = 0
 }
 
 func drawBall() {
@@ -116,6 +128,7 @@ func moveBall() {
 					ballCentreX -= ballSpeed
 					ballCentreY += ballSpeed
 				} else {
+					score += 1
 					ballDirection = "UP_LEFT"
 				}
 			} else if ballCentreY+ballSpeed >= screenSize[1] {
@@ -136,6 +149,7 @@ func moveBall() {
 					ballCentreX += ballSpeed
 					ballCentreY += ballSpeed
 				} else {
+					score += 1
 					ballDirection = "UP_RIGHT"
 				}
 			} else if ballCentreY+ballSpeed >= screenSize[1] {
