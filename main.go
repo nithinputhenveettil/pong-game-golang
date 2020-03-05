@@ -8,80 +8,30 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-const gameName string = "Nithins's Pong Game!"
-
 const (
-	width        int32 = 1000
-	height       int32 = 600
-	ballSpeed    int32 = 8
-	ballRadius   int32 = 25
-	hitBarSpeed  int32 = 14
-	hitBarLength int32 = 100
-	hitBarHeight int32 = 25
+	width        int32  = 1000
+	height       int32  = 600
+	ballSpeed    int32  = 8
+	ballRadius   int32  = 25
+	hitBarSpeed  int32  = 14
+	hitBarLength int32  = 100
+	hitBarHeight int32  = 25
+	gameName     string = "Nithins's Pong Game!"
 )
 
 var (
-	screenSize      [2]int32
+	score           int
+	gameOver        bool
 	hitBarLeft      int32
+	screenSize      [2]int32
 	ballCentreY     int32
 	ballCentreX     int32
 	ballDirection   string
 	accelerateLeft  bool
 	accelerateRight bool
-	gameOver        bool
-	score           int
 )
 
-func main() {
-	initGame()
-
-	rl.InitWindow(screenSize[0], screenSize[1], gameName)
-
-	rl.SetTargetFPS(60)
-
-	for !rl.WindowShouldClose() {
-		if !gameOver {
-			moveBall()
-			moveHitBar()
-		}
-
-		if rl.IsKeyDown(257) == true {
-			initGame()
-		}
-
-		if rl.IsKeyDown(263) == true {
-			accelerateLeft = true
-		}
-		if rl.IsKeyDown(262) == true {
-			accelerateRight = true
-		}
-		if rl.IsKeyUp(263) == true {
-			accelerateLeft = false
-		}
-		if rl.IsKeyUp(262) == true {
-			accelerateRight = false
-		}
-		rl.BeginDrawing()
-		rl.ClearBackground(rl.Black)
-		drawBall()
-		drawHitBar()
-
-		rl.DrawText(strconv.Itoa(score), 810, 100, 80, rl.White)
-
-		if gameOver {
-			rl.DrawText("Game Over!", 220, 200, 110, rl.White)
-			rl.DrawText("Your Score : "+strconv.Itoa(score), 350, 390, 40, rl.Gray)
-			rl.DrawText("Press enter key to continue", 650, 520, 17, rl.LightGray)
-		}
-
-		rl.EndDrawing()
-
-	}
-
-	rl.CloseWindow()
-}
-
-func initGame() {
+func resetGame() {
 	rand.Seed(time.Now().Unix())
 	screenSize = [2]int32{width, height}
 	hitBarLeft = screenSize[0]/2 - int32(hitBarLength)/2
@@ -100,6 +50,24 @@ func drawBall() {
 
 func drawHitBar() {
 	rl.DrawRectangle(hitBarLeft, (screenSize[1] - hitBarHeight), hitBarLength, hitBarHeight, rl.Blue)
+}
+
+func litsenKeyboardEvents() {
+	if rl.IsKeyDown(257) {
+		resetGame()
+	}
+	if rl.IsKeyDown(263) {
+		accelerateLeft = true
+	}
+	if rl.IsKeyDown(262) {
+		accelerateRight = true
+	}
+	if rl.IsKeyUp(263) {
+		accelerateLeft = false
+	}
+	if rl.IsKeyUp(262) {
+		accelerateRight = false
+	}
 }
 
 func moveBall() {
@@ -180,4 +148,29 @@ func moveHitBar() {
 			hitBarLeft += hitBarSpeed
 		}
 	}
+}
+
+func main() {
+	resetGame()
+	rl.InitWindow(screenSize[0], screenSize[1], gameName)
+	rl.SetTargetFPS(60)
+	for !rl.WindowShouldClose() {
+		if !gameOver {
+			moveBall()
+			moveHitBar()
+		}
+		litsenKeyboardEvents()
+		rl.BeginDrawing()
+		rl.ClearBackground(rl.Black)
+		drawBall()
+		drawHitBar()
+		rl.DrawText(strconv.Itoa(score), 840, 70, 80, rl.White)
+		if gameOver {
+			rl.DrawText("Game Over!", 220, 200, 110, rl.White)
+			rl.DrawText("Your Score : "+strconv.Itoa(score), 350, 390, 40, rl.Gray)
+			rl.DrawText("Press enter key to continue...", 650, 520, 18, rl.LightGray)
+		}
+		rl.EndDrawing()
+	}
+	rl.CloseWindow()
 }
