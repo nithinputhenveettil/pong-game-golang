@@ -27,6 +27,7 @@ var (
 	ballDirection   string
 	accelerateLeft  bool
 	accelerateRight bool
+	gameOver        bool
 )
 
 func main() {
@@ -37,30 +38,29 @@ func main() {
 	rl.SetTargetFPS(60)
 
 	for !rl.WindowShouldClose() {
+		if !gameOver {
+			moveBall()
+			moveHitBar()
+		}
 
 		if rl.IsKeyDown(263) == true {
 			accelerateLeft = true
 		}
-
 		if rl.IsKeyDown(262) == true {
 			accelerateRight = true
 		}
-
 		if rl.IsKeyUp(263) == true {
 			accelerateLeft = false
 		}
-
 		if rl.IsKeyUp(262) == true {
 			accelerateRight = false
 		}
-
 		rl.BeginDrawing()
-		moveBall()
-		moveHitBar()
 		rl.ClearBackground(rl.Black)
 		drawBall()
 		drawHitBar()
 		rl.EndDrawing()
+
 	}
 
 	rl.CloseWindow()
@@ -75,6 +75,7 @@ func initGame() {
 	ballDirection = "UP_LEFT"
 	accelerateLeft = false
 	accelerateRight = false
+	gameOver = false
 }
 
 func drawBall() {
@@ -97,28 +98,6 @@ func moveBall() {
 		} else {
 			ballDirection = "DOWN_RIGHT"
 		}
-	} else if ballDirection == "DOWN_LEFT" {
-		if ((ballCentreX - ballSpeed) > ballRadius) && ((ballCentreY + ballSpeed) < (screenSize[1] - ballRadius)) {
-			ballCentreX -= ballSpeed
-			ballCentreY += ballSpeed
-		} else if (ballCentreX - ballSpeed) > ballRadius {
-			ballDirection = "UP_LEFT"
-		} else if (ballCentreY + ballSpeed) < (screenSize[1] - ballRadius) {
-			ballDirection = "DOWN_RIGHT"
-		} else {
-			ballDirection = "UP_RIGHT"
-		}
-	} else if ballDirection == "DOWN_RIGHT" {
-		if ((ballCentreX + ballSpeed) < (screenSize[0] - ballRadius)) && ((ballCentreY + ballSpeed) < (screenSize[1] - ballRadius)) {
-			ballCentreX += ballSpeed
-			ballCentreY += ballSpeed
-		} else if (ballCentreX + ballSpeed) < (screenSize[0] - ballRadius) {
-			ballDirection = "UP_RIGHT"
-		} else if (ballCentreX - ballSpeed) > ballRadius {
-			ballDirection = "DOWN_LEFT"
-		} else {
-			ballDirection = "UP_LEFT"
-		}
 	} else if ballDirection == "UP_RIGHT" {
 		if ((ballCentreX + ballSpeed) < (screenSize[0] - ballRadius)) && ((ballCentreY - ballSpeed) > ballRadius) {
 			ballCentreX += ballSpeed
@@ -129,6 +108,46 @@ func moveBall() {
 			ballDirection = "UP_LEFT"
 		} else {
 			ballDirection = "DOWN_LEFT"
+		}
+	} else if ballDirection == "DOWN_LEFT" {
+		if (ballCentreX - ballSpeed) > ballRadius {
+			if (ballCentreX+ballRadius) >= hitBarLeft && (ballCentreX-ballRadius) <= (hitBarLeft+hitBarLength) {
+				if (ballCentreY + ballSpeed) < (screenSize[1] - (ballRadius + hitBarHeight)) {
+					ballCentreX -= ballSpeed
+					ballCentreY += ballSpeed
+				} else {
+					ballDirection = "UP_LEFT"
+				}
+			} else if ballCentreY+ballSpeed >= screenSize[1] {
+				gameOver = true
+			} else {
+				ballCentreX -= ballSpeed
+				ballCentreY += ballSpeed
+			}
+		} else if (ballCentreY + ballSpeed) < (screenSize[1] - ballRadius) {
+			ballDirection = "DOWN_RIGHT"
+		} else {
+			ballDirection = "UP_RIGHT"
+		}
+	} else if ballDirection == "DOWN_RIGHT" {
+		if (ballCentreX + ballSpeed) < (screenSize[0] - ballRadius) {
+			if (ballCentreX+ballRadius) >= hitBarLeft && (ballCentreX-ballRadius) <= (hitBarLeft+hitBarLength) {
+				if (ballCentreY + ballSpeed) < (screenSize[1] - (ballRadius + hitBarHeight)) {
+					ballCentreX += ballSpeed
+					ballCentreY += ballSpeed
+				} else {
+					ballDirection = "UP_RIGHT"
+				}
+			} else if ballCentreY+ballSpeed >= screenSize[1] {
+				gameOver = true
+			} else {
+				ballCentreX += ballSpeed
+				ballCentreY += ballSpeed
+			}
+		} else if (ballCentreX - ballSpeed) > ballRadius {
+			ballDirection = "DOWN_LEFT"
+		} else {
+			ballDirection = "UP_LEFT"
 		}
 	}
 }
