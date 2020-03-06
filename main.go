@@ -69,7 +69,9 @@ func drawHitBar() {
 
 func litsenKeyboardEvents() {
 	if rl.IsKeyDown(enterKey) {
-		resetGame()
+		if (gameOver) {
+			resetGame()
+		}
 	}
 	if rl.IsKeyDown(leftArrowKey) {
 		accelerateLeft = true
