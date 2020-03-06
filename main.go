@@ -18,29 +18,29 @@ const (
 )
 
 const (
-	enterKey = 257
-	leftArrowKey = 263
+	enterKey      = 257
+	leftArrowKey  = 263
 	rightArrowKey = 262
 )
 
 const (
-	width        int32  = 1000
-	height       int32  = 600
-	ballSpeed    int32  = 8
-	ballRadius   int32  = 25
-	hitBarSpeed  int32  = 14
-	hitBarLength int32  = 100
-	hitBarHeight int32  = 25
-	gameName     string = "Nithins's Pong Game!"
+	width        = 1000
+	height       = 600
+	ballSpeed    = 8
+	ballRadius   = 25
+	hitBarSpeed  = 14
+	hitBarLength = 100
+	hitBarHeight = 25
+	gameName     = "Nithins's Pong Game!"
 )
 
 var (
 	score           int
 	gameOver        bool
-	hitBarLeft      int32
-	screenSize      [2]int32
-	ballCentreY     int32
-	ballCentreX     int32
+	hitBarLeft      int
+	screenSize      [2]int
+	ballCentreY     int
+	ballCentreX     int
 	ballDirection   direction
 	accelerateLeft  bool
 	accelerateRight bool
@@ -48,10 +48,10 @@ var (
 
 func resetGame() {
 	rand.Seed(time.Now().Unix())
-	screenSize = [2]int32{width, height}
-	hitBarLeft = screenSize[0]/2 - int32(hitBarLength)/2
+	screenSize = [2]int{width, height}
+	hitBarLeft = screenSize[0]/2 - hitBarLength/2
 	ballCentreY = 150
-	ballCentreX = rand.Int31n(screenSize[0]-200) + 100
+	ballCentreX = rand.Intn(screenSize[0]-200) + 100
 	ballDirection = upLeft
 	accelerateLeft = false
 	accelerateRight = false
@@ -60,16 +60,16 @@ func resetGame() {
 }
 
 func drawBall() {
-	rl.DrawCircle(ballCentreX, ballCentreY, float32(ballRadius), rl.Red)
+	rl.DrawCircle(int32(ballCentreX), int32(ballCentreY), float32(ballRadius), rl.Red)
 }
 
 func drawHitBar() {
-	rl.DrawRectangle(hitBarLeft, (screenSize[1] - hitBarHeight), hitBarLength, hitBarHeight, rl.Blue)
+	rl.DrawRectangle(int32(hitBarLeft), int32(screenSize[1]-hitBarHeight), int32(hitBarLength), int32(hitBarHeight), rl.Blue)
 }
 
 func litsenKeyboardEvents() {
 	if rl.IsKeyDown(enterKey) {
-		if (gameOver) {
+		if gameOver {
 			resetGame()
 		}
 	}
@@ -117,7 +117,7 @@ func moveBall() {
 					ballCentreX -= ballSpeed
 					ballCentreY += ballSpeed
 				} else {
-					score += 1
+					score++
 					ballDirection = upLeft
 				}
 			} else if ballCentreY+ballSpeed >= screenSize[1] {
@@ -138,7 +138,7 @@ func moveBall() {
 					ballCentreX += ballSpeed
 					ballCentreY += ballSpeed
 				} else {
-					score += 1
+					score++
 					ballDirection = upRight
 				}
 			} else if ballCentreY+ballSpeed >= screenSize[1] {
@@ -169,7 +169,7 @@ func moveHitBar() {
 
 func main() {
 	resetGame()
-	rl.InitWindow(screenSize[0], screenSize[1], gameName)
+	rl.InitWindow(int32(screenSize[0]), int32(screenSize[1]), gameName)
 	rl.SetTargetFPS(60)
 	for !rl.WindowShouldClose() {
 		if !gameOver {
