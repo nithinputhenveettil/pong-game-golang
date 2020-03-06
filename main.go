@@ -18,6 +18,12 @@ const (
 )
 
 const (
+	enterKey = 257
+	leftArrowKey = 263
+	rightArrowKey = 262
+)
+
+const (
 	width        int32  = 1000
 	height       int32  = 600
 	ballSpeed    int32  = 8
@@ -62,19 +68,19 @@ func drawHitBar() {
 }
 
 func litsenKeyboardEvents() {
-	if rl.IsKeyDown(257) {
+	if rl.IsKeyDown(enterKey) {
 		resetGame()
 	}
-	if rl.IsKeyDown(263) {
+	if rl.IsKeyDown(leftArrowKey) {
 		accelerateLeft = true
 	}
-	if rl.IsKeyDown(262) {
+	if rl.IsKeyDown(rightArrowKey) {
 		accelerateRight = true
 	}
-	if rl.IsKeyUp(263) {
+	if rl.IsKeyUp(leftArrowKey) {
 		accelerateLeft = false
 	}
-	if rl.IsKeyUp(262) {
+	if rl.IsKeyUp(rightArrowKey) {
 		accelerateRight = false
 	}
 }
