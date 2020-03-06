@@ -10,7 +10,7 @@ This repo uses `raylib` as a dependency. You need to satisfy the requirments of 
 
 Read more from [here](https://github.com/gen2brain/raylib-go#requirements) 
 
-# Uasage
+# Usage
 
 - Clone this repo
 ```sh
