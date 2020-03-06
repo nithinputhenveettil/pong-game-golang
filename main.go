@@ -8,6 +8,15 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+type direction int
+
+const (
+	upLeft direction = iota + 1
+	upRight
+	downLeft
+	downRight
+)
+
 const (
 	width        int32  = 1000
 	height       int32  = 600
@@ -26,7 +35,7 @@ var (
 	screenSize      [2]int32
 	ballCentreY     int32
 	ballCentreX     int32
-	ballDirection   string
+	ballDirection   direction
 	accelerateLeft  bool
 	accelerateRight bool
 )
@@ -37,7 +46,7 @@ func resetGame() {
 	hitBarLeft = screenSize[0]/2 - int32(hitBarLength)/2
 	ballCentreY = 150
 	ballCentreX = rand.Int31n(screenSize[0]-200) + 100
-	ballDirection = "UP_LEFT"
+	ballDirection = upLeft
 	accelerateLeft = false
 	accelerateRight = false
 	gameOver = false
@@ -71,29 +80,29 @@ func litsenKeyboardEvents() {
 }
 
 func moveBall() {
-	if ballDirection == "UP_LEFT" {
+	if ballDirection == upLeft {
 		if ((ballCentreX - ballSpeed) > ballRadius) && ((ballCentreY - ballSpeed) > ballRadius) {
 			ballCentreX -= ballSpeed
 			ballCentreY -= ballSpeed
 		} else if (ballCentreY - ballSpeed) > ballRadius {
-			ballDirection = "UP_RIGHT"
+			ballDirection = upRight
 		} else if (ballCentreX - ballSpeed) > ballRadius {
-			ballDirection = "DOWN_LEFT"
+			ballDirection = downLeft
 		} else {
-			ballDirection = "DOWN_RIGHT"
+			ballDirection = downRight
 		}
-	} else if ballDirection == "UP_RIGHT" {
+	} else if ballDirection == upRight {
 		if ((ballCentreX + ballSpeed) < (screenSize[0] - ballRadius)) && ((ballCentreY - ballSpeed) > ballRadius) {
 			ballCentreX += ballSpeed
 			ballCentreY -= ballSpeed
 		} else if (ballCentreX + ballSpeed) < (screenSize[0] - ballRadius) {
-			ballDirection = "DOWN_RIGHT"
+			ballDirection = downRight
 		} else if (ballCentreX - ballSpeed) > ballRadius {
-			ballDirection = "UP_LEFT"
+			ballDirection = upLeft
 		} else {
-			ballDirection = "DOWN_LEFT"
+			ballDirection = downLeft
 		}
-	} else if ballDirection == "DOWN_LEFT" {
+	} else if ballDirection == downLeft {
 		if (ballCentreX - ballSpeed) > ballRadius {
 			if (ballCentreX+ballRadius) >= hitBarLeft && (ballCentreX-ballRadius) <= (hitBarLeft+hitBarLength) {
 				if (ballCentreY + ballSpeed) < (screenSize[1] - (ballRadius + hitBarHeight)) {
@@ -101,7 +110,7 @@ func moveBall() {
 					ballCentreY += ballSpeed
 				} else {
 					score += 1
-					ballDirection = "UP_LEFT"
+					ballDirection = upLeft
 				}
 			} else if ballCentreY+ballSpeed >= screenSize[1] {
 				gameOver = true
@@ -110,11 +119,11 @@ func moveBall() {
 				ballCentreY += ballSpeed
 			}
 		} else if (ballCentreY + ballSpeed) < (screenSize[1] - ballRadius) {
-			ballDirection = "DOWN_RIGHT"
+			ballDirection = downRight
 		} else {
-			ballDirection = "UP_RIGHT"
+			ballDirection = upRight
 		}
-	} else if ballDirection == "DOWN_RIGHT" {
+	} else if ballDirection == downRight {
 		if (ballCentreX + ballSpeed) < (screenSize[0] - ballRadius) {
 			if (ballCentreX+ballRadius) >= hitBarLeft && (ballCentreX-ballRadius) <= (hitBarLeft+hitBarLength) {
 				if (ballCentreY + ballSpeed) < (screenSize[1] - (ballRadius + hitBarHeight)) {
@@ -122,7 +131,7 @@ func moveBall() {
 					ballCentreY += ballSpeed
 				} else {
 					score += 1
-					ballDirection = "UP_RIGHT"
+					ballDirection = upRight
 				}
 			} else if ballCentreY+ballSpeed >= screenSize[1] {
 				gameOver = true
@@ -131,9 +140,9 @@ func moveBall() {
 				ballCentreY += ballSpeed
 			}
 		} else if (ballCentreX - ballSpeed) > ballRadius {
-			ballDirection = "DOWN_LEFT"
+			ballDirection = downLeft
 		} else {
-			ballDirection = "UP_LEFT"
+			ballDirection = upLeft
 		}
 	}
 }
